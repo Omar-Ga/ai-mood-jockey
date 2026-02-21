@@ -16,7 +16,7 @@ To ensure the project remains feasible within the timeline, the scope is limited
 
 * **Natural Language Input:** A simple front-end interface accepting text input describing feelings, weather, or activities.  
 * **AI Context Analysis:** A backend process that interprets the input and extracts 2-3 musical parameters (Genre, Valence/Mood, Tempo).  
-* **Smart Music Retrieval:** A search engine that uses the extracted parameters to fetch real songs from Spotify.  
+* **Smart Music Retrieval:** A search engine that uses the extracted parameters to fetch real songs from Jamendo.  
 * **Visual Playlist Feed:** A results page displaying album art, track titles, and artist names.  
 * **Audio Preview:** Integration of 30-second audio previews for immediate listening.
 
@@ -52,7 +52,7 @@ To maintain modularity and separation of concerns, the project will be divided i
 
 * **Responsibility:** Handles the business logic, API communication, and data processing.  
 * **Endpoints:**  
-  * POST /generate/ : Accepts form data, triggers the AI \+ Spotify chain, and returns the results template.
+  * POST /generate/ : Accepts form data, triggers the AI \+ Jamendo chain, and returns the results template.
 
 ## **5\. Database Schema Design**
 
@@ -80,15 +80,15 @@ This model records the "translation" process from human text to AI data.
 **Phase 1: Setup & API Verification**
 
 * Initialize the Django project and create the two apps (web\_interface, playlist\_generator).  
-* Register for Spotify Developer keys and Gemini API keys.  
+* Register for Jamendo Developer keys and Gemini API keys.  
 * **Security:** Use `python-dotenv` to manage API keys securely in a `.env` file.
-* **Deliverable:** A python script that successfully prints 5 songs from Spotify in the terminal.
+* **Deliverable:** A python script that successfully prints 5 songs from Jamendo in the terminal.
 
 **Phase 2: Backend Logic (The "playlist\_generator" App)**
 
 * Build the service layer that calls Gemini.  
 * **AI Validation:** Use Gemini's "JSON Mode" and implement `try/except` blocks to handle malformed AI responses.
-* Connect the AI output to the Spotify `recommendations` endpoint.  
+* Connect the AI output to the Jamendo `recommendations` endpoint.  
 * **Deliverable:** The backend logic receives "Sad" and returns a list of sad song objects.
 
 **Phase 3: Database & Views**
@@ -108,7 +108,7 @@ This model records the "translation" process from human text to AI data.
 
 **Phase 5: Testing & Finalization**
 
-* Add error handling (e.g., "What if Spotify is down?").  
+* Add error handling (e.g., "What if Jamendo is down?").  
 * Clean up code and write comments.  
 * Record the demo video.  
 * **Deliverable:** Final Project Submission.
