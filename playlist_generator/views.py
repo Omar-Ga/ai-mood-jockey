@@ -15,22 +15,29 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def api_status(request):
     """Public endpoint to check API status."""
+    base_url = request.build_absolute_uri('/')[:-1]
     return JsonResponse({
         "status": "active",
         "service": "Mood-Jockey API",
         "endpoints": {
-            "status": "/api/status/",
-            "public_generate": "/api/public/generate/"
-        }
+            "status": f"{base_url}/api/status/",
+            "public_generate": f"{base_url}/api/public/generate/",
+            "example_test_link": f"{base_url}/api/public/generate/?user_input=Energetic+rock+music"
+        },
+        "instructions": "You can test the API by clicking the example_test_link or by changing the 'user_input' parameter in the URL."
     })
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def public_generate_playlist(request):
-    """Public version of the generate_playlist endpoint for testing/course submission."""
+    """Public version of the generate_playlist endpoint. Supports GET for easy browser testing."""
     try:
-        data = json.loads(request.body)
-        user_input = data.get('user_input', '')
+        if request.method == "POST":
+            data = json.loads(request.body)
+            user_input = data.get('user_input', '')
+        else:
+            # Support GET for easy "one-click" testing
+            user_input = request.GET.get('user_input', 'Relaxing lo-fi beats for studying')
         
         if not user_input:
             return JsonResponse({'error': 'User input is required'}, status=400)
