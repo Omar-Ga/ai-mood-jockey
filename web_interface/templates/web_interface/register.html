@@ -1,0 +1,67 @@
+{% extends 'web_interface/base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-32 mb-32 px-6">
+    <div class="glass p-10 md:p-12 rounded-3xl">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold mb-3">Create Account</h2>
+            <p class="text-dim text-sm">Join the next generation of music synthesis.</p>
+        </div>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="space-y-2">
+                <label for="{{ field.id_for_label }}"
+                    class="block text-xs font-bold uppercase tracking-widest text-dim ml-1">
+                    {{ field.label }}
+                </label>
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                    id="{{ field.id_for_label }}"
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-white/20 focus:bg-white/10 outline-none transition-all"
+                    placeholder="Enter details" {% if field.value %}value="{{ field.value }}" {% endif %}>
+
+                {% if field.help_text %}
+                <div class="text-[9px] text-dim/60 leading-relaxed ml-1 help-text-area">
+                    {{ field.help_text|safe }}
+                </div>
+                {% endif %}
+
+                {% if field.errors %}
+                <p class="text-red-400 text-[10px] font-bold ml-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-primary w-full py-4 rounded-xl text-sm mt-4">
+                Get Started
+            </button>
+        </form>
+
+        <div class="mt-10 pt-8 border-t border-white/5 text-center">
+            <p class="text-xs text-dim font-medium">
+                Already have an account? <a href="{% url 'web_interface:login' %}"
+                    class="text-white hover:underline transition-all">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .help-text-area ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .help-text-area li {
+        margin-bottom: 2px;
+    }
+
+    .help-text-area a {
+        color: #fff;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
