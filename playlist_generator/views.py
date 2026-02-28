@@ -10,6 +10,9 @@ from .ai_service import GeminiService
 
 logger = logging.getLogger(__name__)
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def api_status(request):
     """Public endpoint to check API status."""
     return JsonResponse({
@@ -21,6 +24,7 @@ def api_status(request):
         }
     })
 
+@csrf_exempt
 @require_http_methods(["POST"])
 def public_generate_playlist(request):
     """Public version of the generate_playlist endpoint for testing/course submission."""
