@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-mn=ubm(sh9jq@d=^b_^7vnyg661sx26_mh5o9zixy83t^bvq2!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ai-mood-jockey.vercel.app', '.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
