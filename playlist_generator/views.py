@@ -1,4 +1,5 @@
 import json
+import logging
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -6,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from .models import MoodQuery, Track
 from .services import JamendoService
 from .ai_service import GeminiService
+
+logger = logging.getLogger(__name__)
 
 @login_required
 @require_http_methods(["POST"])
@@ -73,7 +76,8 @@ def generate_playlist(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        logger.exception("An error occurred during playlist generation")
+        return JsonResponse({'error': 'An unexpected error occurred while generating your playlist.'}, status=500)
 
 @login_required
 @require_http_methods(["GET"])
