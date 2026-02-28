@@ -10,6 +10,58 @@ from .ai_service import GeminiService
 
 logger = logging.getLogger(__name__)
 
+def api_status(request):
+    """Public endpoint to check API status."""
+    return JsonResponse({
+        "status": "active",
+        "service": "Mood-Jockey API",
+        "endpoints": {
+            "status": "/api/status/",
+            "public_generate": "/api/public/generate/"
+        }
+    })
+
+@require_http_methods(["POST"])
+def public_generate_playlist(request):
+    """Public version of the generate_playlist endpoint for testing/course submission."""
+    try:
+        data = json.loads(request.body)
+        user_input = data.get('user_input', '')
+        
+        if not user_input:
+            return JsonResponse({'error': 'User input is required'}, status=400)
+
+        # 1. Analyze mood with Gemini
+        ai_response = GeminiService.analyze_mood(user_input)
+        if 'error' in ai_response:
+            return JsonResponse(ai_response, status=500)
+            
+        genres = ai_response.get('genres', [])
+        moods = ai_response.get('moods', [])
+        keywords = ai_response.get('keywords', [])
+        
+        # 2. Fetch tracks from Jamendo
+        jamendo_tracks = JamendoService.get_tracks(genres, moods, keywords, limit=10)
+        
+        if not jamendo_tracks:
+            return JsonResponse({'error': 'No tracks found for the given mood'}, status=404)
+
+        # 3. Format response (Skip saving to DB for public/anonymous testing if desired, or save to a default 'anonymous' user)
+        # For simplicity in this public test, we just return the tracks without saving to DB history.
+        
+        return JsonResponse({
+            'message': 'Public test successful',
+            'user_input': user_input,
+            'keywords': ai_response,
+            'tracks': jamendo_tracks
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.exception("An error occurred during public playlist generation")
+        return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
+
 @login_required
 @require_http_methods(["POST"])
 def generate_playlist(request):
